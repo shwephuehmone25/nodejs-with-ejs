@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <a href="/">Go To Home</a>
+    <section class="mx-auto">
+        <h1>Add New Post</h1>
+        <form action="/admin" method="post">
+            <div>
+                <label for="title">Enter Title</label>
+                <input type="text" id="title" name="title" required /><br><br>
+            </div>
+            <div>
+                <label for="desc">Enter Description</label>
+                <input type="text" id="desc" name="description" required /><br><br>
+            </div>
+            <button>Add Post</button>
+        </form>
+    </section>
+</body>
+
+</html>

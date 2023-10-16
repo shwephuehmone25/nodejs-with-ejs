@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%=title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <h1 class="title">This is Home Page</h1>
+    <p class="desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Ullam, repudiandae? Iste deleniti ipsa obcaecati vel possimus laboriosam fugiat porro rerum alias corporis! Ad,
+        aperiam? Aliquid deserunt temporibus quia voluptatem quaerat!</p>
+    <a href="/admin/create-post">Add New Post</a>
+    <hr>
+    <h1 class="title">Posts Lists</h1>
+    <% if (postArray.length===0) { %>
+        <div>
+            <h3>No Posts here!</h3>
+            <p>Create a new Post</p>
+            <a href="/admin/create-post">Add New Post</a>
+        </div>
+        <% } else { %>
+            <% for (let post of postArray) { %>
+                <div class="pstBlog">
+                    <p class="pstTtl">
+                        <%= post.title %>
+                    </p>
+                    <!-- <p class="pstDesc">
+                        <%= post.description %>
+                    </p> -->
+                    <a class="btn" href="/post/<%= post.id %>">View Details...</a>
+                </div>
+                <% } %>
+                    <% } %>
+</body>
+
+</html>

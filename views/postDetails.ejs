@@ -1,0 +1,18 @@
+<%- include('./includes/header') %>
+    <a href="/">Go To Home</a>
+
+    <section class="mx-auto">
+        <img src="<%= post.image_url %>">
+        <h1 class="pstTtl">
+            <%= post.title %>
+        </h1>
+        <p class="desc">
+            <%= post.description %>
+        </p>
+        <hr>
+        <form action="/admin/post/<%= post.id %>" method="post">
+            <button>Delete Posts</button>
+        </form>
+        <a href="/admin/edit-post/<%= post.id %>">Edit Post</a>
+    </section>
+    <%- include('./includes/footer') %>
