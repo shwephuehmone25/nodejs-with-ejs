@@ -1,27 +1,29 @@
-<%- include('./includes/header') %>
-    <a href="/">Go To Home</a>
+<%- include("./includes/head") %>
+
     <section class="mx-auto">
-        <h1 class="title">Edit Post</h1>
-        <form action="/admin/edit-post/" method="post">
-            <input type="text" name="postId" value="<%= post.id %>" hidden>
-            <div>
-                <label for="title">Enter Title</label>
-                <input type="text" id="title" name="title"  value="<%= post.title %>" required/><br><br>
-            </div>
-            <div>
-                <label for="desc">Enter Description</label>
-                <textarea name="description" id="description" cols="30" rows="10"
-                    value="<%= post.description %>"><%= post.description %></textarea>
-                <br><br>
-            </div>
-
-            <div>
-                <label for="img">Choose Image</label>
-                <input type="text" id="image" name="image_url" value="<%= post.image_url %>" required /><br><br>
-                <br><br>
-            </div>
-
-            <button>Update</button>
-        </form>
+      <a href="/">Go back home</a>
+      <h1 class="title">Add a new post here!</h1>
+      <form action="/admin/edit-post" method="post">
+        <input type="text" value="<%= post._id %>" name="postId" hidden>
+        <div>
+          <label for="title">Enter title</label>
+          <input type="text" id="title" name="title" value="<%= post.title %>" required />
+        </div>
+        <div>
+          <label for="photo">Enter photo</label>
+          <input type="text" id="photo" name="photo" value="<%= post.imgUrl %>" required />
+        </div>
+        <div>
+          <label for="description">Enter description</label>
+          <textarea
+            name="description"
+            id="description"
+            cols="30"
+            rows="10"
+          ><%= post.description %></textarea>
+        </div>
+        <button>Update Post</button>
+      </form>
     </section>
-    <%- include('./includes/footer') %>
+  </body>
+  <%- include("./includes/foot") %>

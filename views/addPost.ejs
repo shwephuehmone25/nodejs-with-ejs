@@ -11,29 +11,32 @@
 <body>
 
     <body> -->
-       <%- include('./includes/header') %>
-        <a href="/">Go To Home</a>
+        <%- include("./includes/header") %>
+
         <section class="mx-auto">
-            <h1 class="title">Add New Post</h1>
-            <form action="/admin" method="post">
-                <div>
-                    <label for="title">Enter Title</label>
-                    <input type="text" id="title" name="title" required /><br><br>
-                </div>
-                <div>
-                    <label for="desc">Enter Description</label>
-                    <textarea name="description" id="desc" cols="30" rows="10" required></textarea>
-                    <br><br>
-                </div>
-
-                <div>
-                    <label for="img">Choose Image</label>
-                    <input type="text" id="image" name="image_url" required /><br><br>
-                    <br><br>
-                </div>
-
-                <button>Add Post</button>
-            </form>
+          <a href="/">Go back home</a>
+          <h1 class="title">Add a new post here!</h1>
+          <form action="/admin" method="post">
+            <div>
+              <label for="title">Enter title</label>
+              <input type="text" id="title" name="title" required />
+            </div>
+            <div>
+              <label for="photo">Enter photo</label>
+              <input type="text" id="photo" name="photo" required />
+            </div>
+            <div>
+              <label for="description">Enter description</label>
+              <textarea
+                name="description"
+                id="description"
+                cols="30"
+                rows="10"
+              ></textarea>
+            </div>
+            <button>Add Post</button>
+          </form>
         </section>
-<%- include('./includes/footer') %>
+      </body>
+      <%- include("./includes/footer") %>
 <!-- </html> -->
