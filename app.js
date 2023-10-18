@@ -1,91 +1,33 @@
 const express = require("express");
 const path = require("path");
-/**import to read data from client*/
 const bodyParser = require("body-parser");
-
-const sequelize = require("./utils/database");
-const Post = require("./models/post");
-const User = require("./models/user");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
 const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-const postRouter = require("./routes/post");
-const { adminRouter } = require("./routes/admin");
+const postRoutes = require("./routes/post");
+const adminRoutes = require("./routes/admin");
 
-/*use static file from public like css file*/
 app.use(express.static(path.join(__dirname, "public")));
-
-/*to read data from client with json format*/
-app.use(express.json());
-
-/*to read direct data from client*/
 app.use(bodyParser.urlencoded({ extended: false }));
 
-/*next is a middleware*/
 app.use("/post", (req, res, next) => {
-    console.log("i am post middleware");
-    /*continue other function if success*/
-    next();
+  console.log("i am post middleware");
+  next();
 });
 
-app.use((req, res, next) => {
-    console.log("i am next middleware");
-    next();
-});
+app.use("/admin", adminRoutes);
+app.use(postRoutes);
 
-/* app.get("/",(req, res) => {
-    // res.send("<h1>I am Home Page</h1>")
-    //send file without import path
-    //res.sendFile("./views/home.html", {root : __dirname});
-    //send file with import path
-    res.sendFile(path.join(__dirname, "views", "home.html"));
-});
-
-app.get("/post",(req, res) => {
-    res.sendFile(path.join(__dirname, "views", "post.html"));
-}) */
-app.use("/admin", (req, res, next) => {
-    console.log("I am admin");
-    next();
-});
-
-app.use((req, res, next) => {
-    User.findByPk(1)
-    .then(user => {
-        req.user = user; 
-        console.log(user);
-        next();
-    }).catch( err => { 
-        console.log(err);
-    })
-})
-
-app.use(postRouter);
-app.use("/admin", adminRouter);
-
-/**connect foreign key of user_id in posts & post_id in users*/
-Post.belongsTo(User, {constraints : true, onDelete: "CASCADE" });
-User.hasMany(Post);
-
-// sequelize.sync({force: true})
-sequelize.sync()
-    .then(result => {
-        // console.log(result);
-        return User.findByPk(1)
-        .then( user =>{
-            if(!user){
-                return User.create({name: "shwephue", email: "shwephue@gmail.com"});
-            }
-            return user;
-        })
-        .then((user) => {
-            console.log(user);
-            app.listen(4000);
-        })
-        
-    }).catch(err => {
-        console.log(err);
-    })
+mongoose
+  .connect(process.env.MONGODB_URL)
+  .then((res) => {
+    // console.log(res);
+    app.listen(8080);
+    console.log("connected to mongodb!!!");
+  })
+  .catch((err) => console.log(err));
