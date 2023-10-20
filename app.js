@@ -9,9 +9,11 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+/**import routes */
 const postRoutes = require("./routes/post");
 const adminRoutes = require("./routes/admin");
 const User = require("./models/user");
+const authRoutes = require("./routes/auth");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,8 +27,10 @@ app.use("/", (req, res, next) => {
   })
 });
 
+/**Register route */
 app.use("/admin", adminRoutes);
 app.use(postRoutes);
+app.use(authRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URL)
