@@ -33,13 +33,13 @@ app.use(session({
   }));
 
 /**find user by id in database */
-app.use("/", (req, res, next) => {
-  User.findById("652f9aa9d52887c89955b373")
-  .then( user => {
-    req.user = user
-    next()
-  })
-});
+// app.use("/", (req, res, next) => {
+//   User.findById("652f9aa9d52887c89955b373")
+//   .then( user => {
+//     req.user = user
+//     next()
+//   })
+// });
 
 /**Register route */
 app.use("/admin", adminRoutes);
@@ -53,18 +53,19 @@ mongoose
     app.listen(4000);
     console.log("Connected to mongodb!!!");
 
-    return User.findOne()
-    .then(user => {
-      if(!user)
-      {
-        User.create(
-          { username : "shwephue",
-           email: "shwephue7889@gmail.com", 
-           password: "111111"
-          })
-      }
-      return user;
-    })
+    /**create custom user */
+    // return User.findOne()
+    // .then(user => {
+    //   if(!user)
+    //   {
+    //     User.create(
+    //       { username : "shwephue",
+    //        email: "shwephue7889@gmail.com", 
+    //        password: "111111"
+    //       })
+    //   }
+    //   return user;
+    // })
   }).then(result => {
     console.log(result);
   })

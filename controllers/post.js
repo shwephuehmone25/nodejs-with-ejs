@@ -20,12 +20,13 @@ exports.renderHomePage = (req, res) => {
   /**isLogin is true */
   // const cookie = req.get("Cookie").split("=")[1].trim() === "true";
   // console.log(cookie);
-  console.log("hello")
+  // console.log("hello")
 /**get title only direct from post model*/
   Post.find()
   .select("title")
   /**populate is get only username from user model in relationship */
-  .populate("userId", "username")
+  //.populate("userId", "username")
+  .populate("userId")
   /**Sort post by desc if 1 & -1 is asc in mongoose */
     .sort({ title: -1 })
     .then((posts) => res.render("home", { 
