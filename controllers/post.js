@@ -18,8 +18,9 @@ exports.renderCreatePage = (req, res) => {
 
 exports.renderHomePage = (req, res) => {
   /**isLogin is true */
-  const cookie = req.get("Cookie").split("=")[1].trim() === "true";
-  console.log(cookie);
+  // const cookie = req.get("Cookie").split("=")[1].trim() === "true";
+  // console.log(cookie);
+  console.log("hello")
 /**get title only direct from post model*/
   Post.find()
   .select("title")
@@ -30,7 +31,7 @@ exports.renderHomePage = (req, res) => {
     .then((posts) => res.render("home", { 
       title: "Homepage",
        postsArr: posts,
-       isLogIn: cookie, 
+       isLogIn: req.session.isLogIn ? true : false, 
       }))
     .catch((err) => console.log(err));
 };

@@ -2,9 +2,16 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require("express-session");
 const dotenv = require("dotenv").config();
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const app = express();
+
+var store = new MongoDBStore({
+  uri: process.env.MONGODB_URL,
+  collection: 'sessions'
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -17,6 +24,13 @@ const authRoutes = require("./routes/auth");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
+/**Send session*/
+app.use(session({ 
+  secret : process.env.SESSION_KEY,
+   resave: false, 
+   saveUninitialized: false,
+   store,
+  }));
 
 /**find user by id in database */
 app.use("/", (req, res, next) => {
