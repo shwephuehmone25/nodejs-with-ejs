@@ -26,13 +26,16 @@ exports.renderHomePage = (req, res) => {
   .select("title")
   /**populate is get only username from user model in relationship */
   //.populate("userId", "username")
-  .populate("userId")
+  .populate("userId", "email")
   /**Sort post by desc if 1 & -1 is asc in mongoose */
     .sort({ title: -1 })
     .then((posts) => res.render("home", { 
       title: "Homepage",
        postsArr: posts,
-       isLogIn: req.session.isLogIn ? true : false, 
+       email: posts.email,
+      //  isLogIn: req.session.isLogIn ? true : false, 
+      //  /**release csrf token from express*/
+      //  csrfToken: req.csrfToken()
       }))
     .catch((err) => console.log(err));
 };

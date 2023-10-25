@@ -2,8 +2,11 @@ const express = require("express");
 
 const router = express.Router();
 const postController = require("../controllers/post");
+// const {isLogin} = require("../middleware/isLogin");
 
-// /admin/create-post
+/* /admin/create-post isLogin is middleware*/
+//router.get("/create-post", isLogin, postController.renderCreatePage);
+
 router.get("/create-post", postController.renderCreatePage);
 
 router.post("/", postController.createPost);

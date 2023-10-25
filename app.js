@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const dotenv = require("dotenv").config();
 const MongoDBStore = require("connect-mongodb-session")(session);
+const {isLogin} = require("./middleware/is_Login");
+const csrf = require("csurf");
 
 const app = express();
 
@@ -21,9 +23,12 @@ const postRoutes = require("./routes/post");
 const adminRoutes = require("./routes/admin");
 const User = require("./models/user");
 const authRoutes = require("./routes/auth");
+const { localsName } = require("ejs");
+const csrfToken = csrf();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
+
 /**Send session*/
 app.use(session({ 
   secret : process.env.SESSION_KEY,
@@ -32,17 +37,34 @@ app.use(session({
    store,
   }));
 
-/**find user by id in database */
-// app.use("/", (req, res, next) => {
-//   User.findById("652f9aa9d52887c89955b373")
-//   .then( user => {
-//     req.user = user
-//     next()
-//   })
-// });
+/**release csrf token in every request */
+app.use(csrfToken);
 
-/**Register route */
-app.use("/admin", adminRoutes);
+/**find user by id in database */
+ app.use("/", (req, res, next) => {
+  // console.log(req.session.isLogIn);
+  // console.log(req.session.userInfo_id);
+  if(req.session.isLogIn === undefined)
+  {
+   return next();
+  }
+  User.findById(req.session.userInfo_id).select('_id', 'email')
+  .then( user => {
+    req.user = user
+    next();
+  })
+ });
+
+ /**send csrf token for every page */
+app.use((req, res, next) => {
+  res.locals.isLogIn = req.session.isLogIn ? true : false, 
+  /**release csrf token from express*/     
+  res.locals.csrfToken = req.csrfToken();
+  next();
+})
+
+/**Register route & insert middleware*/
+app.use("/admin", isLogin, adminRoutes);
 app.use(postRoutes);
 app.use(authRoutes);
 
@@ -66,7 +88,8 @@ mongoose
     //   }
     //   return user;
     // })
-  }).then(result => {
-    console.log(result);
   })
+  // .then(result => {
+  //   console.log(result);
+  // })
   .catch((err) => console.log(err));

@@ -11,6 +11,7 @@
         </p>
         <hr>
         <form action="/admin/post/<%= post.id %>" method="post">
+            <input value="<%= csrfToken %>" name="_csrf" hidden>
             <button>Delete Posts</button>
         </form>
         <a href="/admin/edit-post/<%= post.id %>">Edit Post</a>
