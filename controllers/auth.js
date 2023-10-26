@@ -3,7 +3,14 @@ const bcrypt = require("bcrypt");
 
 /**render register */
 exports.registerPage = (req, res) => {
-  res.render("auth/register", { title: "Register" });
+
+  let message = req.flash("error");
+  if(message.length > 0) {
+   message = message[0];
+  }else{
+    message = null;
+  }
+  res.render("auth/register", { title: "Register", errMsg: message });
 };
 
 /**handle register */
@@ -13,6 +20,7 @@ exports.register = (req, res) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
+        req.flash("error", "Email has already exists")
         return res.redirect("/register");
       }
       return bcrypt
@@ -34,7 +42,13 @@ exports.register = (req, res) => {
 
 /**render login page */
 exports.getLoginPage = (req, res) => {
-  res.render("auth/login", { title: "Login" });
+  let message = req.flash("error");
+  if(message.length > 0) {
+   message = message[0];
+  }else{
+    message = null;
+  }
+  res.render("auth/login", { title: "Login", errMsg: message });
 };
 
 /**handle login */
@@ -45,10 +59,12 @@ exports.postLoginPage = (req, res) => {
   User.findOne({ email })
     .then((user) => {
       if (!user) {
+        req.flash("error", "Credentials does not match and try again.")
         return res.redirect("/login");
       }
       /** compare password/ bcrypt.compare(password,user.hashedpassword); */
-      bcrypt.compare(password,user.password)
+      bcrypt
+      .compare(password,user.password)
       .then(isEqual => {
         if(isEqual)
         {

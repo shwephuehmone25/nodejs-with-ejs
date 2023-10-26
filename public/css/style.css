@@ -66,3 +66,21 @@
   .details p {
     font-size: 17px;
   }
+
+  .msg-box{
+    width: 100%;
+    text-align: center;
+    color: red;
+    border: 1px solid red;
+    background-color: rgb(255, 184, 184);
+    padding: 4px 10px;
+  }
+
+  .msg-box-warning{
+    width: 100%;
+    text-align: center;
+    color: yellow;
+    border: 1px solid yellow;
+    background-color: rgb(255,153,102);
+    padding: 4px 10px;
+  }

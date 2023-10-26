@@ -7,6 +7,7 @@ const dotenv = require("dotenv").config();
 const MongoDBStore = require("connect-mongodb-session")(session);
 const {isLogin} = require("./middleware/is_Login");
 const csrf = require("csurf");
+const flash = require("connect-flash");
 
 const app = express();
 
@@ -37,8 +38,9 @@ app.use(session({
    store,
   }));
 
-/**release csrf token in every request */
+/**middleware imports/release csrf token in every request */
 app.use(csrfToken);
+app.use(flash());
 
 /**find user by id in database */
  app.use("/", (req, res, next) => {
