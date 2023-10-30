@@ -21,6 +21,7 @@ exports.renderHomePage = (req, res) => {
   // const cookie = req.get("Cookie").split("=")[1].trim() === "true";
   // console.log(cookie);
   // console.log("hello")
+  console.log(req.session.userInfo)
 /**get title only direct from post model*/
   Post.find()
   .select("title")
@@ -32,7 +33,8 @@ exports.renderHomePage = (req, res) => {
     .then((posts) => res.render("home", { 
       title: "Homepage",
        postsArr: posts,
-       email: posts.email,
+       //email: posts.email,
+      currentUserEmail: req.session.userInfo.email ? req.session.userInfo.email : "",
       //  isLogIn: req.session.isLogIn ? true : false, 
       //  /**release csrf token from express*/
       //  csrfToken: req.csrfToken()

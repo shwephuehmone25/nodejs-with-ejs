@@ -1,24 +1,24 @@
 <%- include("../includes/header") %>
 
-        <section class="mx-auto">
-          <a href="/">Go back home</a>
-          <h1 class="title">Login Account</h1>
-          <% if(errMsg)  { %>
-            <p class="msg-box"> <%= errMsg %></p>
-            <% } %>
-          <form action="/login" method="post">
-            <input value="<%= csrfToken %>" name="_csrf" hidden>
-            <div>
-              <label for="email">Enter email</label>
-              <input type="text" id="email" name="email"/>
-            </div>
-            <div>
-              <label for="password">Enter password</label>
-              <input type="password" id="password" name="password"/>
-            </div>
-            <a href="/reset-password">Forget Password?</a>
-            <button>Login</button>
-          </form>
-        </section>
-      </body>
-      <%- include("../includes/footer") %>
+    <section class="mx-auto">
+      <a href="/">Go back home</a>
+      <h1 class="title">Login account</h1>
+      <% if(errMsg){ %>
+        <p class="msg-box"><%= errMsg %></p>
+      <% }%>
+      <form action="/login" method="post">
+        <input hidden value="<%= csrfToken %>" name="_csrf" />
+        <div>
+          <label for="email">Enter email</label>
+          <input type="text" id="email" name="email"  />
+        </div>
+        <div>
+          <label for="password">Enter password</label>
+          <input type="password" id="password" name="password"  />
+        </div>
+        <a href="/reset-password">Forget password ?</a>
+        <button>Login</button>
+      </form>
+    </section>
+  </body>
+  <%- include("../includes/footer") %>

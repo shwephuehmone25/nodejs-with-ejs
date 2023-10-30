@@ -6,7 +6,7 @@
   dolore commodi cum dolorem deleniti soluta, ea nemo.
 </p>
 <% if(isLogIn) { %>
-  <a href="/admin/create-post">Add a new post</a>
+  <a href="/admin/create-post">Add a new post <%=  currentUserEmail ? : currentUserEmail : "" %></a>
   <form action="/logout" method="post">
     <input value="<%= csrfToken %>" name="_csrf" hidden>
     <button>Logout</button>
