@@ -14,6 +14,21 @@ router.get("/login", authController.getLoginPage);
 /**handle login page */
 router.post("/login", authController.postLoginPage);
 
+/**render feedback */
+router.get("/feedback", authController.getFeedback);
+
+/**render reset-password */
+router.get("/reset-password", authController.resetPassword);
+
+/**handle reset-password */
+router.post("/reset", authController.resetLinkSend);
+
+/**render reset-password */
+router.get("/reset-password/:token", authController.getnewPasswordPage);
+
+/*handle change new password*/
+router.post("/change-new-password", authController.changeNewPassword);
+
 /**render logout page */
 router.post("/logout", authController.logout);
 

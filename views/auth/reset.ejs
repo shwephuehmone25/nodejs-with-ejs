@@ -1,23 +1,18 @@
 <%- include("../includes/header") %>
 
         <section class="mx-auto">
-          <a href="/">Go back home</a>
-          <h1 class="title">Login Account</h1>
+          <a href="/login">Go back Login</a>
+          <h1 class="title">Reset Password</h1>
           <% if(errMsg)  { %>
             <p class="msg-box"> <% errMsg %></p>
             <% } %>
-          <form action="/login" method="post">
+          <form action="/reset" method="post">
             <input value="<%= csrfToken %>" name="_csrf" hidden>
             <div>
               <label for="email">Enter email</label>
               <input type="text" id="email" name="email"/>
             </div>
-            <div>
-              <label for="password">Enter password</label>
-              <input type="password" id="password" name="password"/>
-            </div>
-            <a href="/reset-password">Forget Password?</a>
-            <button>Login</button>
+            <button>Reset Password</button>
           </form>
         </section>
       </body>
