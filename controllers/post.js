@@ -34,7 +34,7 @@ exports.renderHomePage = (req, res) => {
       title: "Homepage",
        postsArr: posts,
        //email: posts.email,
-      currentUserEmail: req.session.userInfo.email ? req.session.userInfo.email : "",
+      currentUserEmail: req.session.userInfo ? req.session.userInfo.email : "",
       //  isLogIn: req.session.isLogIn ? true : false, 
       //  /**release csrf token from express*/
       //  csrfToken: req.csrfToken()
@@ -46,7 +46,12 @@ exports.renderHomePage = (req, res) => {
 exports.getPost = (req, res) => {
   const postId = req.params.postId;
   Post.findById(postId)
-    .then((post) => res.render("postDetails", { title: post.title, post }))
+    .then((post) => res.render("postDetails", { 
+      title: post.title,
+       post,
+       currentLoginUserId: req.session.userInfo
+       ? req.session.userInfo._id
+       : "", }))
     .catch((err) => console.log(err));
 };
 
@@ -69,6 +74,9 @@ exports.updatePost = (req, res) => {
 
   Post.findById(postId)
     .then((post) => {
+      if(post.userId !== req.user._id.toString()){
+        return res.redirect("/");
+      }
       post.title = title;
       post.description = description;
       post.image_url = photo;
@@ -82,9 +90,19 @@ exports.updatePost = (req, res) => {
 };
 
 /**Delete post by id in mongoose by findByIdAndRemove method*/
+// exports.deletePost = (req, res) => {
+//   const { postId } = req.params;
+//   Post.findByIdAndRemove(postId)
+//     .then(() => {
+//       console.log("Post Deleted!!");
+//       res.redirect("/");
+//     })
+//     .catch((err) => console.log(err));
+// };
+
 exports.deletePost = (req, res) => {
   const { postId } = req.params;
-  Post.findByIdAndRemove(postId)
+  Post.deleteOne({ _id: postId, userId: req.user._id })
     .then(() => {
       console.log("Post Deleted!!");
       res.redirect("/");
