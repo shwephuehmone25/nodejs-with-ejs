@@ -12,7 +12,7 @@ const userSchema = new Schema({
   // },
   email: {
     type: String,
-    required: [true, "Please enter a valid gmail."],
+    required: true,
     unique: true,
   },
   password: {
@@ -21,7 +21,7 @@ const userSchema = new Schema({
     minLength: 4,
   },
   resetToken: String,
-  tokenExperiation: Date
+  tokenExpiration: Date
 });
 
 module.exports = model("User", userSchema);

@@ -4,7 +4,7 @@
           <a href="/">Go back home</a>
           <h1 class="title">Login Account</h1>
           <% if(errMsg)  { %>
-            <p class="msg-box"> <% errMsg %></p>
+            <p class="msg-box"> <%= errMsg %></p>
             <% } %>
           <form action="/login" method="post">
             <input value="<%= csrfToken %>" name="_csrf" hidden>

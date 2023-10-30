@@ -17,7 +17,7 @@
 <% } %>
 <hr />
 <h1 class="title">Posts Lists</h1>
-<% if(postsArr.length === 0) { %>
+<% if(postsArr.length === 0 && isLogIn) { %>
   <div>
     <h4>No posts here!</h4>
     <p>Create a new post now !!!</p>

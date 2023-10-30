@@ -5,16 +5,10 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const dotenv = require("dotenv").config();
 const MongoDBStore = require("connect-mongodb-session")(session);
-const {isLogin} = require("./middleware/is_Login");
 const csrf = require("csurf");
 const flash = require("connect-flash");
 
 const app = express();
-
-var store = new MongoDBStore({
-  uri: process.env.MONGODB_URL,
-  collection: 'sessions'
-});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -22,9 +16,18 @@ app.set("views", "views");
 /**import routes */
 const postRoutes = require("./routes/post");
 const adminRoutes = require("./routes/admin");
-const User = require("./models/user");
 const authRoutes = require("./routes/auth");
+
+const User = require("./models/user");
+const {isLogin} = require("./middleware/is-Login");
+
 const { localsName } = require("ejs");
+
+var store = new MongoDBStore({
+  uri: process.env.MONGODB_URL,
+  collection: "sessions"
+});
+
 const csrfToken = csrf();
 
 app.use(express.static(path.join(__dirname, "public")));

@@ -4,7 +4,7 @@
           <a href="/login">Go back Login</a>
           <h1 class="title">Reset Password</h1>
           <% if(errMsg)  { %>
-            <p class="msg-box"> <% errMsg %></p>
+            <p class="msg-box"> <%= errMsg %></p>
             <% } %>
           <form action="/reset" method="post">
             <input value="<%= csrfToken %>" name="_csrf" hidden>
