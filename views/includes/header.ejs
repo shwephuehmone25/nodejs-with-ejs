@@ -11,3 +11,20 @@
 </head>
 
 <body>
+
+    <nav>
+        <h1><a href="/">BLOG.IO</a></h1>
+        <div class="right-side">
+          <% if(isLogIn) { %>
+          <a href="/admin/create-post">Create post</a>
+          <a href="/admin/profile"> Profile </a>
+          <form action="/logout" method="post">
+            <input hidden value="<%= csrfToken %>" name="_csrf" />
+            <button>Logout</button>
+          </form>
+          <% } else { %>
+          <a href="/login">Login to existing account</a>
+          <a href="/register">Create a new account</a>
+          <% } %>
+        </div>
+      </nav>

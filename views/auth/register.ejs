@@ -4,17 +4,17 @@
           <a href="/">Go back home</a>
           <h1 class="title">Create Account</h1>
           <% if(errMsg)  { %>
-            <p class="msg-box-warning"> <%= errMsg %></p>
+            <p class="msg-box"> <%= errMsg %></p>
             <% } %>
           <form action="/register" method="post">
             <input value="<%= csrfToken %>" name="_csrf" hidden>
             <div>
               <label for="email">Enter email</label>
-              <input type="text" id="email" name="email"/>
+              <input type="text" id="email" name="email" value="<%= oldFormData.email %>"/>
             </div>
             <div>
               <label for="password">Enter password</label>
-              <input type="password" id="password" name="password"/>
+              <input type="password" id="password" name="password" value="<%= oldFormData.password %>" />
             </div>
             <button>Register</button>
           </form>
