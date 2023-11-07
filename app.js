@@ -18,7 +18,13 @@ const postRoutes = require("./routes/post");
 const adminRoutes = require("./routes/admin");
 const authRoutes = require("./routes/auth");
 
+/**import models*/
 const User = require("./models/user");
+
+/**import controllers*/
+const errorController = require("./controllers/error");
+
+/**import middleware*/
 const {isLogin} = require("./middleware/is-Login");
 
 const { localsName } = require("ejs");
@@ -72,6 +78,10 @@ app.use((req, res, next) => {
 app.use("/admin", isLogin, adminRoutes);
 app.use(postRoutes);
 app.use(authRoutes);
+
+/**handle error for no route */
+app.all("*", errorController.get404Page);
+app.use(errorController.get500Page);
 
 mongoose
   .connect(process.env.MONGODB_URL)

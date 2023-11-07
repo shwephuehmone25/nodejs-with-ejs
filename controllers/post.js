@@ -1,22 +1,26 @@
 const Post = require("../models/post");
 
 /**create post in mongoose */
-exports.createPost = (req, res) => {
+exports.createPost = (req, res, next) => {
   const { title, description, photo } = req.body;
   Post.create({ title, description, image_url: photo, userId: req.user })
     .then((result) => {
       console.log(result);
       res.redirect("/");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };
 
-exports.renderCreatePage = (req, res) => {
+exports.renderCreatePage = (req, res, next) => {
   // res.sendFile(path.join(__dirname, "..", "views", "addPost.html"));
   res.render("addPost", { title: "Create Post" });
 };
 
-exports.renderHomePage = (req, res) => {
+exports.renderHomePage = (req, res, next) => {
   /**isLogin is true */
   // const cookie = req.get("Cookie").split("=")[1].trim() === "true";
   // console.log(cookie);
@@ -39,24 +43,40 @@ exports.renderHomePage = (req, res) => {
       //  /**release csrf token from express*/
       //  csrfToken: req.csrfToken()
       }))
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };
 
 /**get post details in mongoose */
-exports.getPost = (req, res) => {
+exports.getPost = (req, res, next) => {
   const postId = req.params.postId;
+  console.log(req.user);
   Post.findById(postId)
-    .then((post) => res.render("postDetails", { 
-      title: post.title,
-       post,
-       currentLoginUserId: req.session.userInfo
-       ? req.session.userInfo._id
-       : "", }))
-    .catch((err) => console.log(err));
+    .populate("userId", "email")
+    .then((post) => {
+      res.render("details", {
+        title: post.title,
+        post,
+        date: post.createdAt
+          ? formatISO9075(post.createdAt, { representation: "date" })
+          : undefined,
+        currentLoginUserId: req.session.userInfo
+          ? req.session.userInfo._id
+          : "",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Post not found with this ID.");
+      return next(error);
+    });
 };
 
 /**get edit post data in mongoose by findById*/
-exports.getEditPost = (req, res) => {
+exports.getEditPost = (req, res, next) => {
   const postId = req.params.postId;
   Post.findById(postId)
     .then((post) => {
@@ -65,11 +85,15 @@ exports.getEditPost = (req, res) => {
       }
       res.render("editPost", { title: post.title, post });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };
 
 /**edit post data in mongoose by findById*/
-exports.updatePost = (req, res) => {
+exports.updatePost = (req, res, next) => {
   const { postId, title, description, photo } = req.body;
 
   Post.findById(postId)
@@ -86,11 +110,15 @@ exports.updatePost = (req, res) => {
       console.log("Post Updated");
       res.redirect("/");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };
 
 /**Delete post by id in mongoose by findByIdAndRemove method*/
-// exports.deletePost = (req, res) => {
+// exports.deletePost = (req, res, next) => {
 //   const { postId } = req.params;
 //   Post.findByIdAndRemove(postId)
 //     .then(() => {
@@ -100,12 +128,16 @@ exports.updatePost = (req, res) => {
 //     .catch((err) => console.log(err));
 // };
 
-exports.deletePost = (req, res) => {
+exports.deletePost = (req, res, next) => {
   const { postId } = req.params;
   Post.deleteOne({ _id: postId, userId: req.user._id })
     .then(() => {
       console.log("Post Deleted!!");
       res.redirect("/");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };

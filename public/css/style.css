@@ -117,3 +117,18 @@ button,
   background-color: rgb(255, 255, 193);
   padding: 4px 10px;
 }
+
+.four {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.four h1 {
+  font-size: 60px;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

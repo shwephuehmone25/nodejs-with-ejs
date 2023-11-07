@@ -284,7 +284,7 @@ exports.registerAccount = (req, res) => {
           from: process.env.SENDER_MAIL,
           to: email,
           subject: "Register Successful",
-          html: "<h1>Register account successful.</h1><p>You have been created an account using this email address in blog.io</p>",
+          html: "<h1>Register account successful.</h1><p>You have been created an account using this email address in medium.com</p>",
         },
         (err) => {
           console.log(err);
@@ -347,7 +347,11 @@ exports.postLoginData = (req, res) => {
         })
         .catch((err) => console.log(err));
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };
 
 // handle logout
@@ -421,6 +425,8 @@ exports.resetLinkSend = (req, res) => {
       })
       .catch((err) => {
         console.log(err);
+        const error = new Error("Something Went Wrong");
+        return next(error);
       });
   });
 };
@@ -448,7 +454,11 @@ exports.getNewpasswordPage = (req, res) => {
         res.redirect("/");
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };
 
 /**handle change password*/
@@ -485,5 +495,9 @@ exports.changeNewpassword = (req, res) => {
     .then(() => {
       res.redirect("login");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      const error = new Error("Something Went Wrong");
+      return next(error);
+    });
 };
