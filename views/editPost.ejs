@@ -3,7 +3,7 @@
     <section class="mx-auto">
       <a href="/">Go back home</a>
       <h1 class="title">Add a new post here!</h1>
-      <form action="/admin/edit-post" method="post">
+      <form action="/admin/edit-post" method="post" enctype="multipart/form-data">
         <input hidden value="<%= csrfToken %>" name="_csrf" />
         <input type="text" value="<%= post._id %>" name="postId" hidden>
         <div>
@@ -12,7 +12,7 @@
         </div>
         <div>
           <label for="photo">Enter photo</label>
-          <input type="text" id="photo" name="photo" value="<%= post.imgUrl %>" required />
+          <input type="file" id="photo" name="photo" />
         </div>
         <div>
           <label for="description">Enter description</label>

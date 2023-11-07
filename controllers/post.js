@@ -2,10 +2,28 @@ const Post = require("../models/post");
 
 /**create post in mongoose */
 exports.createPost = (req, res, next) => {
-  const { title, description, photo } = req.body;
-  Post.create({ title, description, image_url: photo, userId: req.user })
+  const { title, description } = req.body;
+  const image = req.file;
+  const errors = validationResult(req);
+
+  if (image === undefined) {
+    return res.status(422).render("addPost", {
+      title: "Post create",
+      errMsg: "Image extension must be jpg,png and jpeg.",
+      oldFormData: { title, description },
+    });
+  }
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("addPost", {
+      title: "Post create",
+      errMsg: errors.array()[0].msg,
+      oldFormData: { title, description },
+    });
+  }
+
+  Post.create({ title, description, image_url: image.path, userId: req.user })
     .then((result) => {
-      console.log(result);
       res.redirect("/");
     })
     .catch((err) => {
@@ -83,7 +101,17 @@ exports.getEditPost = (req, res, next) => {
       if (!post) {
         return res.redirect("/");
       }
-      res.render("editPost", { title: post.title, post });
+      res.render("editPost", {
+        postId,
+        title: post.title,
+        post,
+        errMsg: "",
+        oldFormData: {
+          title: undefined,
+          description: undefined,
+        },
+        isValidationFail: false,
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -94,21 +122,36 @@ exports.getEditPost = (req, res, next) => {
 
 /**edit post data in mongoose by findById*/
 exports.updatePost = (req, res, next) => {
-  const { postId, title, description, photo } = req.body;
+  const { postId, title, description } = req.body;
+
+  const image = req.file;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("editPost", {
+      postId,
+      title,
+      errMsg: errors.array()[0].msg,
+      oldFormData: { title, description },
+      isValidationFail: true,
+    });
+  }
 
   Post.findById(postId)
     .then((post) => {
-      if(post.userId !== req.user._id.toString()){
+      if (post.userId.toString() !== req.user._id.toString()) {
         return res.redirect("/");
       }
       post.title = title;
       post.description = description;
-      post.image_url = photo;
-      return post.save();
-    })
-    .then(() => {
-      console.log("Post Updated");
-      res.redirect("/");
+      if (image) {
+        fileDelete(post.imgUrl);
+        post.imgUrl = image.path;
+      }
+      return post.save().then(() => {
+        console.log("Post Updated");
+        res.redirect("/");
+      });
     })
     .catch((err) => {
       console.log(err);
