@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const fileDelete = require("../utils/fileDelete");
 
 /**create post in mongoose */
 exports.createPost = (req, res, next) => {
@@ -145,6 +146,7 @@ exports.updatePost = (req, res, next) => {
       post.title = title;
       post.description = description;
       if (image) {
+        /**call fileDelete function*/
         fileDelete(post.imgUrl);
         post.imgUrl = image.path;
       }
@@ -171,9 +173,17 @@ exports.updatePost = (req, res, next) => {
 //     .catch((err) => console.log(err));
 // };
 
+/**Delete post*/
 exports.deletePost = (req, res, next) => {
   const { postId } = req.params;
-  Post.deleteOne({ _id: postId, userId: req.user._id })
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        return res.redirect("/");
+      }
+      fileDelete(post.imgUrl);
+      return Post.deleteOne({ _id: postId, userId: req.user._id });
+    })
     .then(() => {
       console.log("Post Deleted!!");
       res.redirect("/");
