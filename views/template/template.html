@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Download PDF</title>
+  </head>
+  <body>
+    <h1>{{post.title}}</h1>
+    <p>Author {{post.userId.email}}</p>
+    <img
+      src="http://localhost:4000/{{post.imageUrl}}"
+      height="500"
+      width="100%"
+      alt="{{post.title}}"
+    />
+    <p style="font-family: 'Poppins', sans-serif">{{post.description}}</p>
+  </body>
+</html>

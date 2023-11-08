@@ -1,5 +1,9 @@
 const Post = require("../models/post");
 const fileDelete = require("../utils/fileDelete");
+const pdf = require("pdf-creator-node");
+const fs = require("fs");
+
+const expath = require("path");
 
 /**create post in mongoose */
 exports.createPost = (req, res, next) => {
@@ -44,24 +48,28 @@ exports.renderHomePage = (req, res, next) => {
   // const cookie = req.get("Cookie").split("=")[1].trim() === "true";
   // console.log(cookie);
   // console.log("hello")
-  console.log(req.session.userInfo)
-/**get title only direct from post model*/
+  console.log(req.session.userInfo);
+  /**get title only direct from post model*/
   Post.find()
-  .select("title")
-  /**populate is get only username from user model in relationship */
-  //.populate("userId", "username")
-  .populate("userId", "email")
-  /**Sort post by desc if 1 & -1 is asc in mongoose */
+    .select("title")
+    /**populate is get only username from user model in relationship */
+    //.populate("userId", "username")
+    .populate("userId", "email")
+    /**Sort post by desc if 1 & -1 is asc in mongoose */
     .sort({ title: -1 })
-    .then((posts) => res.render("home", { 
-      title: "Homepage",
-       postsArr: posts,
-       //email: posts.email,
-      currentUserEmail: req.session.userInfo ? req.session.userInfo.email : "",
-      //  isLogIn: req.session.isLogIn ? true : false, 
-      //  /**release csrf token from express*/
-      //  csrfToken: req.csrfToken()
-      }))
+    .then((posts) =>
+      res.render("home", {
+        title: "Homepage",
+        postsArr: posts,
+        //email: posts.email,
+        currentUserEmail: req.session.userInfo
+          ? req.session.userInfo.email
+          : "",
+        //  isLogIn: req.session.isLogIn ? true : false,
+        //  /**release csrf token from express*/
+        //  csrfToken: req.csrfToken()
+      })
+    )
     .catch((err) => {
       console.log(err);
       const error = new Error("Something Went Wrong");
@@ -193,4 +201,69 @@ exports.deletePost = (req, res, next) => {
       const error = new Error("Something Went Wrong");
       return next(error);
     });
+};
+
+//handle pdf download
+exports.downloadPdf = (req, res, next) => {
+  const { id } = req.params;
+  const templateUrl = `${expath.join(
+    __dirname,
+    "../views/template/template.html"
+  )}`;
+  const html = fs.readFileSync(templateUrl, "utf8");
+  const options = {
+    format: "A3",
+    orientation: "portrait",
+    border: "10mm",
+    header: {
+      height: "45mm",
+      contents: '<h4 style="text-align: center;">PDF Download</h4>',
+    },
+    footer: {
+      height: "28mm",
+      contents: {
+        first: "Cover page",
+        default:
+          '<span style="color: #444; text-align: center">@medium.com</span>',
+        last: "Last Page",
+      },
+    },
+  };
+  // let postData;
+  Post.findById(id)
+  .populate("userId", "email")
+  .lean()
+  .then((post) => {
+    const date = new Date();
+    const pdfSaveUrl = `${expath.join(
+      __dirname,
+      "../public/pdf",
+      date.getTime() + ".pdf"
+    )}`;
+    const document = {
+      html,
+      data: {
+        post,
+      },
+      path: pdfSaveUrl,
+      type: "",
+    };
+    pdf
+      .create(document, options)
+      .then((result) => {
+        console.log(result);
+        res.download(pdfSaveUrl, (err) => {
+          if (err) throw err;
+          fileDelete(pdfSaveUrl);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  })
+  .catch((err) => {
+    console.log(err);
+    const error = new Error("Something Went Wrong");
+    return next(error);
+  });
 };
