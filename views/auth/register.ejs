@@ -1,23 +1,23 @@
 <%- include("../includes/header") %>
 
-        <section class="mx-auto">
-          <a href="/">Go back home</a>
-          <h1 class="title">Create Account</h1>
-          <% if(errMsg)  { %>
-            <p class="msg-box"> <%= errMsg %></p>
-            <% } %>
-          <form action="/register" method="post">
-            <input value="<%= csrfToken %>" name="_csrf" hidden>
-            <div>
-              <label for="email">Enter email</label>
-              <input type="text" id="email" name="email" value="<%= oldFormData.email %>"/>
-            </div>
-            <div>
-              <label for="password">Enter password</label>
-              <input type="password" id="password" name="password" value="<%= oldFormData.password %>" />
-            </div>
-            <button>Register</button>
-          </form>
-        </section>
-      </body>
-      <%- include("../includes/footer") %>
+    <section class="mx-auto">
+      <a href="/">Go back home</a>
+      <h1 class="title form-title">Register a new account here!</h1>
+      <% if(errorMsg){ %>
+        <p class="msg-box-warn"><%= errorMsg %></p>
+      <% }%>
+      <form action="/register" method="post">
+        <input hidden value="<%= csrfToken %>" name="_csrf" />
+        <div>
+          <label for="email">Enter email</label>
+          <input type="text" id="email" name="email" value="<%= oldFormData.email %>" />
+        </div>
+        <div>
+            <label for="password">Enter password</label>
+            <input type="password" id="password" name="password" value="<%= oldFormData.password %>"  />
+          </div>
+        <button>Create Account</button>
+      </form>
+    </section>
+  </body>
+  <%- include("../includes/footer") %>

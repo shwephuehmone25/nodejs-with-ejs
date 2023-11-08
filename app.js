@@ -26,13 +26,13 @@ const User = require("./models/user");
 const errorController = require("./controllers/error");
 
 /**import middleware*/
-const {isLogin} = require("./middleware/is-Login");
+const { isLogin } = require("./middleware/is-Login");
 
-const { localsName } = require("ejs");
+//const { localsName } = require("ejs");
 
-var store = new MongoDBStore({
+const store = new MongoDBStore({
   uri: process.env.MONGODB_URL,
-  collection: "sessions"
+  collection: "sessions",
 });
 
 const csrfToken = csrf();
@@ -63,45 +63,74 @@ const fileFilterConfigure = (req, file, cb) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
-  multer({ storage: storageConfigure, fileFilter: fileFilterConfigure }).single("photo"));
+  multer({ storage: storageConfigure, fileFilter: fileFilterConfigure }).single(
+    "photo"
+  )
+);
 
 /**Send session*/
-app.use(session({ 
-  secret : process.env.SESSION_KEY,
-   resave: false, 
-   saveUninitialized: false,
-   store,
-  }));
+app.use(
+  session({
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: false,
+    store,
+  })
+);
 
-/**middleware imports/release csrf token in every request */
 app.use(csrfToken);
 app.use(flash());
 
-/**find user by id in database */
- app.use("/", (req, res, next) => {
-  // console.log(req.session.isLogIn);
-  // console.log(req.session.userInfo_id);
-  if(req.session.isLogIn === undefined)
-  {
-   return next();
-  }
-  User.findById(req.session.userInfo_id).select('_id', 'email')
-  .then( user => {
-    req.user = user
-    next();
-  })
- });
+/**middleware imports/release csrf token in every request */
+// app.use(csrfToken);
+// app.use(flash());
 
- /**send csrf token for every page */
+// /**find user by id in database */
+//  app.use("/", (req, res, next) => {
+// console.log(req.session.isLogIn);
+// console.log(req.session.userInfo_id);
+//   if(req.session.isLogin === undefined)
+//   {
+//    return next();
+//   }
+//   User.findById(req.session.userInfo_id).select('_id', 'email')
+//   .then( user => {
+//     req.user = user
+//     next();
+//   })
+//  });
+
+/**middleware imports/release csrf token in every request */
 app.use((req, res, next) => {
-  res.locals.isLogIn = req.session.isLogIn ? true : false, 
-  /**release csrf token from express*/     
+  if (req.session.isLogin === undefined) {
+    return next();
+  }
+  User.findById(req.session.userInfo._id)
+    .select("_id email")
+    .then((user) => {
+      req.user = user;
+      next();
+    });
+});
+
+// to send csrf token for every page render
+app.use((req, res, next) => {
+  res.locals.isLogin = req.session.isLogin ? true : false;
   res.locals.csrfToken = req.csrfToken();
   next();
-})
+});
+
+/**send csrf token for every page */
+app.use((req, res, next) => {
+  (res.locals.isLogin = req.session.isLogin ? true : false),
+    /**release csrf token from express*/
+    (res.locals.csrfToken = req.csrfToken());
+  next();
+});
 
 /**Register route & insert middleware*/
 app.use("/admin", isLogin, adminRoutes);
@@ -126,7 +155,7 @@ mongoose
     //   {
     //     User.create(
     //       { username : "shwephue",
-    //        email: "shwephue7889@gmail.com", 
+    //        email: "shwephue7889@gmail.com",
     //        password: "111111"
     //       })
     //   }

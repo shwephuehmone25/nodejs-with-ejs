@@ -1,19 +1,19 @@
 <%- include("../includes/header") %>
 
-        <section class="mx-auto">
-          <a href="/login">Go back Login</a>
-          <h1 class="title">Reset Password</h1>
-          <% if(errMsg)  { %>
-            <p class="msg-box"> <%= errMsg %></p>
-            <% } %>
-          <form action="/reset" method="post" novalidate>
-            <input value="<%= csrfToken %>" name="_csrf" hidden>
-            <div>
-              <label for="email">Enter email</label>
-              <input type="text" id="email" name="email"/>
-            </div>
-            <button>Reset Password</button>
-          </form>
-        </section>
-      </body>
-      <%- include("../includes/footer") %>
+    <section class="mx-auto">
+      <a href="/login">Go back login</a>
+      <h1 class="title form-title">Reset password</h1>
+      <% if(errorMsg){ %>
+        <p class="msg-box"><%= errorMsg %></p>
+      <% }%>
+      <form action="/reset" method="post" novalidate>
+        <input hidden value="<%= csrfToken %>" name="_csrf" />
+        <div>
+          <label for="email">Enter email</label>
+          <input type="email" id="email" name="email"  />
+        </div>
+        <button>Reset password</button>
+      </form>
+    </section>
+  </body>
+  <%- include("../includes/footer") %>

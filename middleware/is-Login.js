@@ -1,6 +1,7 @@
 exports.isLogin = (req, res, next) => {
-  if (req.session.isLogIn === undefined) {
+  if (req.session.isLogin === undefined) {
     return res.redirect("/");
   }
   next();
 };
+

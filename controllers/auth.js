@@ -48,7 +48,7 @@
 //               from: process.env.SENDER_MAIL,
 //               to: email,
 //               subject: "Register Successful",
-//               html: "<h1>Register account successful.</h1><p>Created an account using this email address in blog.io.</p>",
+//               html: "<h1>Register account successful.</h1><p>Created an account using this email address in medium.io.</p>",
 //             },
 //             (err) => {
 //               console.log(err);
@@ -226,11 +226,11 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const crypto = require("crypto");
-/**import validator*/
-const { validationResult } = require("express-validator");
 
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv").config();
+
+const { validationResult } = require("express-validator");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -250,7 +250,7 @@ exports.getRegisterPage = (req, res) => {
   }
   res.render("auth/register", {
     title: "Register",
-    errMsg: message,
+    errorMsg: message,
     oldFormData: { email: "", password: "" },
   });
 };
@@ -259,12 +259,11 @@ exports.getRegisterPage = (req, res) => {
 exports.registerAccount = (req, res) => {
   const { email, password } = req.body;
 
-  /**catch errors from validator*/
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/register", {
       title: "Register",
-      errMsg: errors.array()[0].msg,
+      errorMsg: errors.array()[0].msg,
       oldFormData: { email, password },
     });
   }
@@ -284,7 +283,7 @@ exports.registerAccount = (req, res) => {
           from: process.env.SENDER_MAIL,
           to: email,
           subject: "Register Successful",
-          html: "<h1>Register account successful.</h1><p>You have been created an account using this email address in medium.com</p>",
+          html: "<h1>Register account successful.</h1><p>You have been created an account using this email address in medium.io</p>",
         },
         (err) => {
           console.log(err);
@@ -302,36 +301,34 @@ exports.getLoginPage = (req, res) => {
     message = null;
   }
   res.render("auth/login", {
-     title: "Login", 
-     errMsg: message,
-     oldFormData: { email: "", password: "" },
-     });
+    title: "Login",
+    errorMsg: message,
+    oldFormData: { email: "", password: "" },
+  });
 };
 
 // handle login
 exports.postLoginData = (req, res) => {
   const { email, password } = req.body;
-  
-  const errors = validationResult(req);
 
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    //console.log(errors);
-    return res.status(422).render("auth/login", {
+    res.status(422).render("auth/login", {
       title: "Login",
-      errMsg: "Please enter vaild email and password.",
+      errorMsg: errors.array()[0].msg,
       oldFormData: { email, password },
     });
   }
 
   User.findOne({ email })
-  .then((user) => {
-    if (!user) {
-      return res.status(422).render("auth/login", {
-        title: "Login",
-        errMsg: "Please enter vaild email and password.",
-        oldFormData: { email, password },
-      });
-    }
+    .then((user) => {
+      if (!user) {
+        return res.status(422).render("auth/login", {
+          title: "Login",
+          errorMsg: "Please enter vaild email and password.",
+          oldFormData: { email, password },
+        });
+      }
       bcrypt
         .compare(password, user.password)
         .then((isMatch) => {
@@ -343,15 +340,15 @@ exports.postLoginData = (req, res) => {
               console.log(err);
             });
           }
-          res.redirect("/login");
+          res.status(422).render("auth/login", {
+            title: "Login",
+            errorMsg: "Please enter vaild email and password.",
+            oldFormData: { email, password },
+          });
         })
         .catch((err) => console.log(err));
     })
-    .catch((err) => {
-      console.log(err);
-      const error = new Error("Something Went Wrong");
-      return next(error);
-    });
+    .catch((err) => console.log(err));
 };
 
 // handle logout
@@ -369,12 +366,18 @@ exports.getResetpage = (req, res) => {
   } else {
     message = null;
   }
-  res.render("auth/reset", { title: "Reset Password", errMsg: message });
+  res.render("auth/reset", {
+    title: "Reset Password",
+    errorMsg: message,
+    oldFormData: { email: "" },
+  });
 };
 
 // render feedback page
 exports.getFeedbackPage = (req, res) => {
-  res.render("auth/feedback", { title: "Success." });
+  res.render("auth/feedback", {
+    title: "Success.",
+  });
 };
 
 // reset password link send
@@ -425,13 +428,10 @@ exports.resetLinkSend = (req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        const error = new Error("Something Went Wrong");
-        return next(error);
       });
   });
 };
 
-/**render change password*/
 exports.getNewpasswordPage = (req, res) => {
   const { token } = req.params;
   User.findOne({ resetToken: token, tokenExpiration: { $gt: Date.now() } })
@@ -445,7 +445,7 @@ exports.getNewpasswordPage = (req, res) => {
         }
         res.render("auth/new-password", {
           title: "Change password",
-          errMsg: message,
+          errorMsg: message,
           resetToken: token,
           user_id: user._id,
           oldFormData: { password: "", confirm_password: "" },
@@ -454,14 +454,9 @@ exports.getNewpasswordPage = (req, res) => {
         res.redirect("/");
       }
     })
-    .catch((err) => {
-      console.log(err);
-      const error = new Error("Something Went Wrong");
-      return next(error);
-    });
+    .catch((err) => console.log(err));
 };
 
-/**handle change password*/
 exports.changeNewpassword = (req, res) => {
   const { password, confirm_password, user_id, resetToken } = req.body;
 
@@ -471,7 +466,7 @@ exports.changeNewpassword = (req, res) => {
       title: "Change password",
       resetToken,
       user_id,
-      errMsg: errors.array()[0].msg,
+      errorMsg: errors.array()[0].msg,
       oldFormData: { password, confirm_password },
     });
   }
@@ -495,9 +490,6 @@ exports.changeNewpassword = (req, res) => {
     .then(() => {
       res.redirect("login");
     })
-    .catch((err) => {
-      console.log(err);
-      const error = new Error("Something Went Wrong");
-      return next(error);
-    });
+    .catch((err) => console.log(err));
 };
+
