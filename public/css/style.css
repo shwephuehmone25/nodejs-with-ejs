@@ -144,6 +144,9 @@ button,
 .btn-delete{
   background-color: rgb(255, 0, 76);
 }
+.btn-logout{
+  background-color: #6499e9;
+}
 .mx-auto {
   width: 40%;
   margin: auto auto;
