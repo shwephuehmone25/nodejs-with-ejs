@@ -17,9 +17,9 @@
     <div>
       <form action="/admin/delete/<%= post._id %>" method="post">
         <input hidden value="<%= csrfToken %>" name="_csrf" />
-        <button>Delete</button>
+        <button class="btn-delete">Delete</button>
       </form>
-      <a href="/admin/edit/<%= post._id %>" class="btn-full">Edit</a>
+      <a href="/admin/edit/<%= post._id %>" class="btn-edit">Edit</a>
     </div>
   </div>
   <% } %>

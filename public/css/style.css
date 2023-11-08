@@ -129,10 +129,10 @@ textarea {
   width: 100%;
 }
 button,
-.btn-full {
+.btn-edit {
   margin: 10px 0;
   color: #fff;
-  background-color: #6499e9;
+  background-color: #64e9b4;
   padding: 8px 20px;
   font-size: 15px;
   width: 100%;
@@ -140,6 +140,9 @@ button,
   cursor: pointer;
   outline: none;
   border: none;
+}
+.btn-delete{
+  background-color: rgb(255, 0, 76);
 }
 .mx-auto {
   width: 40%;
