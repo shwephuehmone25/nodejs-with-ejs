@@ -277,6 +277,8 @@ const pdf = require("pdf-creator-node");
 const fs = require("fs");
 const expath = require("path");
 
+const POST_PER_PAGE = 3;
+
 const fileDelete = require("../utils/fileDelete");
 
 exports.createPost = (req, res, next) => {
@@ -320,18 +322,56 @@ exports.renderCreatePage = (req, res, next) => {
 };
 
 exports.renderHomePage = (req, res, next) => {
+  const pageNumber = +req.query.page || 1;
+  let totalPostNumber;
+  // total = 12
+  // per page = 3
+  // next page = -3 +3
+
+  // page => 1 - 1 = 0
+  // per page => 3 * 0 = 0
+
+  // page => 2 - 1 = 1
+  // per page => 3 * 1 = 3
+
+  // page => 3 - 1 = 2
+  // per page => 3 * 2 = 6
+
+  // page => 4 - 1 = 3
+  // per page => 3 * 3 = 9
   Post.find()
-    .select("title description")
-    .populate("userId", "email")
-    .sort({ title: -1 })
+    .countDocuments()
+    .then((totalPostCount) => {
+      totalPostNumber = totalPostCount;
+      return Post.find()
+        .select("title description")
+        .populate("userId", "email")
+        /**skip is remove 1 from total & limit is show only 2*/
+        // .skip(1).limit(2)
+        .skip((pageNumber - 1) * POST_PER_PAGE)
+        .limit(POST_PER_PAGE)
+        .sort({ createdAt: -1 });
+    })
     .then((posts) => {
-      res.render("home", {
-        title: "Homepage",
-        postsArr: posts,
-        currentUserEmail: req.session.userInfo
-          ? req.session.userInfo.email
-          : "",
-      });
+      if (posts.length > 0) {
+        return res.render("home", {
+          title: "Homepage",
+          postsArr: posts,
+          currentUserEmail: req.session.userInfo
+            ? req.session.userInfo.email
+            : "",
+          currentPage: pageNumber,
+          hasNextPage: POST_PER_PAGE * pageNumber < totalPostNumber,
+          hasPreviousPage: pageNumber > 1,
+          nextPage: pageNumber + 1,
+          previousPage: pageNumber - 1,
+        });
+      } else {
+        return res.status(500).render("error/500", {
+          title: "Something went wrong.",
+          message: "no post in this page query.",
+        });
+      }
     })
     .catch((err) => {
       console.log(err);

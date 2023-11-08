@@ -141,10 +141,10 @@ button,
   outline: none;
   border: none;
 }
-.btn-delete{
+.btn-delete {
   background-color: rgb(255, 0, 76);
 }
-.btn-logout{
+.btn-logout {
   background-color: #6499e9;
 }
 .mx-auto {
@@ -178,7 +178,14 @@ button,
 .msg-box-warn {
   width: 100%;
   text-align: center;
-  border: 1px solid rgb(255,153,102);
+  border: 1px solid rgb(255, 153, 102);
   background-color: rgb(255, 255, 193);
   padding: 4px 10px;
+}
+.paginate {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 80px 10px 80px;
 }
